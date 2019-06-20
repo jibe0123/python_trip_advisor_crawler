@@ -127,3 +127,7 @@ dmypy.json
 .idea/
 
 *.zip
+
+*.csv
+
+csv/
