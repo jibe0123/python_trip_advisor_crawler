@@ -34,7 +34,8 @@ class getReviewsURL(HTMLParser):
 						out.write("\n")
 
 
-def parseHtml(url):
+def parseHtml(url, hotel_en_cour):
+
 	browser = Browser('chrome', headless=True)
 
 	print(url)
@@ -48,13 +49,36 @@ def parseHtml(url):
 
 		reviews = browser.find_by_css('.hotels-community-tab-common-Card__section--4r93H')
 
+		i = 0
 		for review in reviews:
+
+			if	i == 5:
+				print(i	)
+				break
 
 			user = review.find_by_css('.social-member-event-MemberEventOnObjectBlock__member--35-jC').text
 			user_contribution = review.find_by_css('.social-member-MemberHeaderStats__bold--3z3qh')[0].text
 
-			#textElem = review.find_by_css('q.hotels-review-list-parts-ExpandableReview__reviewText--3oMkH span').text
 
+
+			if len(review.find_by_css('q.hotels-review-list-parts-ExpandableReview__reviewText--3oMkH')) > 0:
+				text = review.find_by_css('q.hotels-review-list-parts-ExpandableReview__reviewText--3oMkH').text
+			else:
+				print("au suivant")
+
+
+
+			text_clean = text.replace(',', '/')
+			text_clean = text_clean.replace('\n' , " ")
+
+
+			print("review : ")
+			print(repr(text_clean))
+
+			with open("./resultat.csv", 'a', newline='') as out:
+				out.write(hotel_en_cour + ","+ str(user) + "," + repr(text_clean))
+				out.write("\n")
+				i = i + 1
 
 
 		return 1
@@ -79,7 +103,9 @@ def retrievelocations():
 				step = number
 				print("Nombre total  de page: " + str(step))
 
-			parseHtml(url_origin)
+			parseHtml(url_origin, hotel_en_cour)
+
+
 
 			pagination = 5
 			print("Pagination: " + str(pagination) + "step: " + str(step))
@@ -93,7 +119,7 @@ def retrievelocations():
 				print("page url " + url_page)
 				print("Pagination: " + str(pagination) + "step: " + str(step))
 
-				parseHtml(url_page)
+				parseHtml(url_page, hotel_en_cour)
 				pagination = pagination + 5
 
 
