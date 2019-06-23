@@ -53,18 +53,38 @@ def parseHtml(url, hotel_en_cour):
 		for review in reviews:
 
 			if	i == 5:
-				print(i	)
 				break
 
 			user = review.find_by_css('.social-member-event-MemberEventOnObjectBlock__member--35-jC').text
 			user_contribution = review.find_by_css('.social-member-MemberHeaderStats__bold--3z3qh')[0].text
+			vote_utile = 0
 
+			date_contribution_raw = str(review.find_by_css('.social-member-event-MemberEventOnObjectBlock__event_type--3njyv span').text)
+
+			date_sejour = review.find_by_css('.hotels-review-list-parts-EventDate__event_date--CRXs4')
+
+			date_sejour_formatted = date_sejour.text[16:len(date_sejour.text)]
+
+
+			reponse_proprio = review.find_by_css('.hotels-review-list-parts-OwnerResponse__reviewText--28Wat').text
+
+
+
+
+			if re.search("avis le", date_contribution_raw):
+				pos_date = re.search("avis le", date_contribution_raw).end()
+				date_contribution = date_contribution_raw[pos_date:len(date_contribution_raw)]
+
+			if len(review.find_by_css('.social-member-MemberHeaderStats__bold--3z3qh')) > 1:
+				text = review.find_by_css('q.hotels-review-list-parts-ExpandableReview__reviewText--3oMkH').text
+				vote_utile = int(review.find_by_css('.social-member-MemberHeaderStats__bold--3z3qh')[1].text)
+
+			if len(date_sejour) > 0:
+				date_sejour = date_sejour.text
 
 
 			if len(review.find_by_css('q.hotels-review-list-parts-ExpandableReview__reviewText--3oMkH')) > 0:
 				text = review.find_by_css('q.hotels-review-list-parts-ExpandableReview__reviewText--3oMkH').text
-			else:
-				print("au suivant")
 
 
 
@@ -72,14 +92,11 @@ def parseHtml(url, hotel_en_cour):
 			text_clean = text_clean.replace('\n' , " ")
 
 
-			print("review : ")
-			print(repr(text_clean))
-
 			with open("./resultat.csv", 'a', newline='') as out:
-				out.write(hotel_en_cour + ","+ str(user) + "," + repr(text_clean))
+				out.write(hotel_en_cour + ","+ str(user) + "," + str(user_contribution) + "," + str(vote_utile) +  "," + str(date_contribution) + ","  + str(date_sejour_formatted) + "," + repr(text_clean) + "," + str(reponse_proprio))
 				out.write("\n")
-				i = i + 1
 
+			i = i + 1
 
 		return 1
 
