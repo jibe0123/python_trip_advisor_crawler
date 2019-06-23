@@ -78,7 +78,12 @@ def parseHtml(url, hotel_en_cour):
 
 
 def retrievelocations():
-	with open('./csv/input_2.csv', newline='') as csvfile:
+	with open("./resultat.csv", 'a', newline='') as out:
+		out.write("Nom de l'hotel" + "," + "Contributeur" + "," + "Nombre_de_contributions" + "," + "Vote_utile" + "," + "date_contribution" + "," + "date_sejour" + "," + "review" + "," + "reponse_proprietaire")
+		out.write("\n")
+
+
+	with open('./csv/input.csv', newline='') as csvfile:
 		content = csv.reader(csvfile, delimiter=',', quotechar='|')
 		for row in content:
 			url_origin = row[1]

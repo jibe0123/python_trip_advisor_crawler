@@ -6,7 +6,7 @@ CrawlTripAdvisor is a crawler for the review in TripAdvisor
 ## Requirements
 
 ```pydocstring
-pip install splinter
+pip install selenium
 ```
 
 ## Running the scripts
