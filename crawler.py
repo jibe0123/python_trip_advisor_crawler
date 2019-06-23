@@ -6,32 +6,7 @@ import os
 
 import requests
 import re
-from html.parser import HTMLParser
 from splinter import Browser
-
-
-class getReviewsURL(HTMLParser):
-
-	def __init__(self, hotel_en_cour):
-		super().__init__()
-		self.hotel_en_cour = hotel_en_cour
-		self.counter = 0
-
-	def handle_starttag(self, tag, attrs):
-
-		if tag.startswith('a') and self.counter < 110:
-			self.counter = self.counter + 1
-			for attr in attrs:
-				if attr[0] == 'href' and attr[1][0:16] == '/ShowUserReviews':
-					try:
-						os.makedirs("hotels/" + self.hotel_en_cour + "/reviews/")
-					except FileExistsError:
-						pass
-
-					with open("./hotels/" + self.hotel_en_cour + "/reviews/reviews_link.csv", 'a', newline='') as out:
-						print(attr[1])
-						out.write(attr[1])
-						out.write("\n")
 
 
 def parseHtml(url, hotel_en_cour):
@@ -66,10 +41,6 @@ def parseHtml(url, hotel_en_cour):
 			date_sejour_formatted = date_sejour.text[16:len(date_sejour.text)]
 
 
-			reponse_proprio = review.find_by_css('.hotels-review-list-parts-OwnerResponse__reviewText--28Wat').text
-
-
-
 
 			if re.search("avis le", date_contribution_raw):
 				pos_date = re.search("avis le", date_contribution_raw).end()
@@ -77,7 +48,7 @@ def parseHtml(url, hotel_en_cour):
 
 			if len(review.find_by_css('.social-member-MemberHeaderStats__bold--3z3qh')) > 1:
 				text = review.find_by_css('q.hotels-review-list-parts-ExpandableReview__reviewText--3oMkH').text
-				vote_utile = int(review.find_by_css('.social-member-MemberHeaderStats__bold--3z3qh')[1].text)
+				vote_utile = review.find_by_css('.social-member-MemberHeaderStats__bold--3z3qh')[1].text
 
 			if len(date_sejour) > 0:
 				date_sejour = date_sejour.text
@@ -87,13 +58,18 @@ def parseHtml(url, hotel_en_cour):
 				text = review.find_by_css('q.hotels-review-list-parts-ExpandableReview__reviewText--3oMkH').text
 
 
+			reponse_proprio = review.find_by_css('.hotels-review-list-parts-OwnerResponse__reviewText--28Wat').text
+
 
 			text_clean = text.replace(',', '/')
 			text_clean = text_clean.replace('\n' , " ")
 
+			reponse_proprio_clean = reponse_proprio.replace(',', '/')
+			reponse_proprio_clean = reponse_proprio_clean.replace('\n', " ")
+
 
 			with open("./resultat.csv", 'a', newline='') as out:
-				out.write(hotel_en_cour + ","+ str(user) + "," + str(user_contribution) + "," + str(vote_utile) +  "," + str(date_contribution) + ","  + str(date_sejour_formatted) + "," + repr(text_clean) + "," + str(reponse_proprio))
+				out.write(hotel_en_cour + ","+ str(user) + "," + str(user_contribution) + "," + str(vote_utile) +  "," + str(date_contribution) + ","  + str(date_sejour_formatted) + "," + repr(text_clean) + "," + str(reponse_proprio_clean))
 				out.write("\n")
 
 			i = i + 1

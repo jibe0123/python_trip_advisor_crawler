@@ -3,6 +3,24 @@
 CrawlTripAdvisor is a crawler for the review in TripAdvisor
 
 
+## Requirements
+
+```pydocstring
+pip install splinter
+```
+
+## Running the scripts
+
+Create a folder with a csv containing all the urls
+
+```zsh
+python crawler.py
+```
+
+
+
+
+
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
