@@ -13,7 +13,7 @@ def parseHtml(url, hotel_en_cour):
 	executable_path = {'executable_path': './chromedriver'}
 
 
-	browser = Browser('chrome', **executable_path, headless=True)
+	browser = Browser('chrome', headless=True)
 
 	print(url)
 	with browser:
@@ -59,9 +59,10 @@ def parseHtml(url, hotel_en_cour):
 			if len(review.find_by_css('q.hotels-review-list-parts-ExpandableReview__reviewText--3oMkH')) > 0:
 				text = review.find_by_css('q.hotels-review-list-parts-ExpandableReview__reviewText--3oMkH').text
 
-			reponse_proprio = ""
+			reponse_proprio_clean = ""
 
 			if review.find_by_css('.hotels-review-list-parts-OwnerResponse__reviewText--28Wat'):
+				reponse_proprio = ""
 				reponse_proprio = review.find_by_css('.hotels-review-list-parts-OwnerResponse__reviewText--28Wat').text
 				reponse_proprio_clean = reponse_proprio.replace(',', '/')
 				reponse_proprio_clean = reponse_proprio_clean.replace('\n', " ")
@@ -93,8 +94,6 @@ def retrievelocations():
 			url_origin = row[1]
 			hotel_en_cour = row[0].replace(' ', '')
 
-			create_directory(hotel_en_cour)
-
 			print("hotel en cour:" + url_origin)
 			page = requests.get(url_origin)
 			html = page.text
@@ -102,6 +101,7 @@ def retrievelocations():
 			if m:
 				found = m.group(1)
 				number = int(re.search(r'\d+', found[60:len(found)]).group())
+
 				step = number
 				print("Nombre total  de page: " + str(step))
 
