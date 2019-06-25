@@ -59,15 +59,17 @@ def parseHtml(url, hotel_en_cour):
 			if len(review.find_by_css('q.hotels-review-list-parts-ExpandableReview__reviewText--3oMkH')) > 0:
 				text = review.find_by_css('q.hotels-review-list-parts-ExpandableReview__reviewText--3oMkH').text
 
+			reponse_proprio = ""
 
 			if review.find_by_css('.hotels-review-list-parts-OwnerResponse__reviewText--28Wat'):
 				reponse_proprio = review.find_by_css('.hotels-review-list-parts-OwnerResponse__reviewText--28Wat').text
+				reponse_proprio_clean = reponse_proprio.replace(',', '/')
+				reponse_proprio_clean = reponse_proprio_clean.replace('\n', " ")
 
 			text_clean = text.replace(',', '/')
 			text_clean = text_clean.replace('\n' , " ")
 
-			reponse_proprio_clean = reponse_proprio.replace(',', '/')
-			reponse_proprio_clean = reponse_proprio_clean.replace('\n', " ")
+
 
 
 			with open("./resultat.csv", 'a', newline='') as out:
