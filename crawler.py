@@ -12,9 +12,8 @@ from splinter import Browser
 def parseHtml(url, hotel_en_cour):
 	executable_path = {'executable_path': './chromedriver'}
 
-	browser = Browser('chrome', headless=True)
 
-	browser = Browser('chrome', **executable_path,, headless=True)
+	browser = Browser('chrome', **executable_path, headless=True)
 
 	print(url)
 	with browser:
