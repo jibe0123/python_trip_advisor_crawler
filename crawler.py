@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#! /usr/bin/python
 # -*- coding: utf-8 -*-
 
 import csv
@@ -10,8 +10,11 @@ from splinter import Browser
 
 
 def parseHtml(url, hotel_en_cour):
+	executable_path = {'executable_path': './chromedriver'}
 
 	browser = Browser('chrome', headless=True)
+
+	browser = Browser('chrome', **executable_path,, headless=True)
 
 	print(url)
 	with browser:
@@ -58,8 +61,8 @@ def parseHtml(url, hotel_en_cour):
 				text = review.find_by_css('q.hotels-review-list-parts-ExpandableReview__reviewText--3oMkH').text
 
 
-			reponse_proprio = review.find_by_css('.hotels-review-list-parts-OwnerResponse__reviewText--28Wat').text
-
+			if review.find_by_css('.hotels-review-list-parts-OwnerResponse__reviewText--28Wat'):
+				reponse_proprio = review.find_by_css('.hotels-review-list-parts-OwnerResponse__reviewText--28Wat').text
 
 			text_clean = text.replace(',', '/')
 			text_clean = text_clean.replace('\n' , " ")
