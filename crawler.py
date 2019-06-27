@@ -18,11 +18,7 @@ def parseHtml(url, hotel_en_cour):
 	print(url)
 	with browser:
 		browser.visit(url)
-		remove = browser.find_by_css('body').click()
 
-		plus_present = browser.is_element_not_present_by_css('span.moreBtn', wait_time=5)
-
-		plus = browser.find_by_css('span.moreBtn')
 
 		reviews = browser.find_by_css('.hotels-community-tab-common-Card__section--4r93H')
 
@@ -39,6 +35,8 @@ def parseHtml(url, hotel_en_cour):
 			date_contribution_raw = str(review.find_by_css('.social-member-event-MemberEventOnObjectBlock__event_type--3njyv span').text)
 
 			date_sejour = review.find_by_css('.hotels-review-list-parts-EventDate__event_date--CRXs4')
+
+			print(date_sejour.text)
 
 			date_sejour_formatted = date_sejour.text[16:len(date_sejour.text)]
 
@@ -81,6 +79,22 @@ def parseHtml(url, hotel_en_cour):
 
 		return 1
 
+def getPageNumber(url):
+	executable_path = {'executable_path': './chromedriver'}
+
+	browser = Browser('chrome', headless=True)
+	with browser:
+		browser.visit(url)
+		page_number = browser.find_by_css('.pageNumbers a.pageNum')
+		result = page_number[len(page_number) - 1]["href"]
+		number = int(re.search(r'\d+', result[60:len(result)]).group())
+		step = number
+		return step
+
+
+
+
+
 
 def retrievelocations():
 	with open("./resultat.csv", 'a', newline='') as out:
@@ -95,19 +109,10 @@ def retrievelocations():
 			hotel_en_cour = row[0].replace(' ', '')
 
 			print("hotel en cour:" + url_origin)
-			page = requests.get(url_origin)
-			html = page.text
-			m = re.search('<a class="pageNum " href="(.+?)</a>', html)
-			if m:
-				found = m.group(1)
-				number = int(re.search(r'\d+', found[60:len(found)]).group())
 
-				step = number
-				print("Nombre total  de page: " + str(step))
+			step = getPageNumber(url_origin)
 
 			parseHtml(url_origin, hotel_en_cour)
-
-
 
 			pagination = 5
 			print("Pagination: " + str(pagination) + "step: " + str(step))
