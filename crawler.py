@@ -3,11 +3,21 @@
 
 import csv
 import os
+import time
 
-import requests
 import re
 from splinter import Browser
 
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 def parseHtml(url, hotel_en_cour):
 	executable_path = {'executable_path': './chromedriver'}
@@ -104,6 +114,7 @@ def retrievelocations():
 	with open('./csv/input.csv', newline='') as csvfile:
 		content = csv.reader(csvfile, delimiter=',', quotechar='|')
 		for row in content:
+			start_time = time.time()
 			url_origin = row[1]
 			hotel_en_cour = row[0].replace(' ', '')
 
@@ -125,6 +136,8 @@ def retrievelocations():
 				print("page url " + url_page)
 				print("Pagination: " + str(pagination) + "step: " + str(step))
 				if pagination == step:
+					print("Hotel scrappé en : %s secondes ---" % (time.time() - start_time))
+					print(bcolors.OKGREEN+ "Hotel scrappé ;)")
 					break
 
 				parseHtml(url_page, hotel_en_cour)
