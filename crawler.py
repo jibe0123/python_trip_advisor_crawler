@@ -20,12 +20,11 @@ def parseHtml(url, hotel_en_cour):
 		browser.visit(url)
 
 
-		reviews = browser.find_by_css('.hotels-community-tab-common-Card__section--4r93H')
-
+		reviews = browser.find_by_css('.hotels-review-list-parts-SingleReview__reviewContainer--d54T4')
 		i = 0
 		for review in reviews:
 
-			if	i == 5:
+			if	i == len(reviews):
 				break
 
 			user = review.find_by_css('.social-member-event-MemberEventOnObjectBlock__member--35-jC').text
@@ -128,6 +127,10 @@ def retrievelocations():
 
 				parseHtml(url_page, hotel_en_cour)
 				pagination = pagination + 5
+				if pagination == step:
+					break
+
+
 
 
 def create_directory(path):
