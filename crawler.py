@@ -124,11 +124,11 @@ def retrievelocations():
 				url_page = url_origin[:pos_reviews] + 'or' + str(pagination) + url_origin[pos_reviews - 1:]
 				print("page url " + url_page)
 				print("Pagination: " + str(pagination) + "step: " + str(step))
+				if pagination == step:
+					break
 
 				parseHtml(url_page, hotel_en_cour)
 				pagination = pagination + 5
-				if pagination == step:
-					break
 
 
 
