@@ -22,8 +22,8 @@ class bcolors:
 def parseHtml(url, hotel_en_cour):
 	executable_path = {'executable_path': './chromedriver'}
 
+	browser = Browser('chrome', **executable_path, headless = True)
 
-	browser = Browser('chrome', headless=True)
 
 	print(url)
 	with browser:
@@ -91,7 +91,7 @@ def parseHtml(url, hotel_en_cour):
 def getPageNumber(url):
 	executable_path = {'executable_path': './chromedriver'}
 
-	browser = Browser('chrome', headless=True)
+	browser = Browser('chrome', **executable_path, headless = True)
 	with browser:
 		browser.visit(url)
 		page_number = browser.find_by_css('.pageNumbers a.pageNum')
