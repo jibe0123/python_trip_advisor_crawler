@@ -45,11 +45,10 @@ def parseHtml(url, hotel_en_cour):
 
 			date_sejour = review.find_by_css('.hotels-review-list-parts-EventDate__event_date--CRXs4')
 
-			print(date_sejour.text)
 
 			date_sejour_formatted = date_sejour.text[16:len(date_sejour.text)]
 
-
+			date_contribution = ""
 
 			if re.search("avis le", date_contribution_raw):
 				pos_date = re.search("avis le", date_contribution_raw).end()
@@ -79,11 +78,14 @@ def parseHtml(url, hotel_en_cour):
 
 
 
+			try:
+				with open("./resultat.csv", 'a', newline='', encoding='utf-8') as out:
+					out.write(hotel_en_cour + "," + str(user) + "," + str(user_contribution) + "," + str(vote_utile) + "," + str(date_contribution) + "," + str(date_sejour_formatted) + "," + repr(text_clean) + "," + str(reponse_proprio_clean))
+					out.write("\n")
+			except IOError:
+				print(IOError)
 
-			with open("./resultat.csv", 'a', newline='') as out:
-				out.write(hotel_en_cour + ","+ str(user) + "," + str(user_contribution) + "," + str(vote_utile) +  "," + str(date_contribution) + ","  + str(date_sejour_formatted) + "," + repr(text_clean) + "," + str(reponse_proprio_clean))
-				out.write("\n")
-
+			# print(hotel_en_cour + "," + str(user) + "," + str(user_contribution) + "," + str(vote_utile) + "," + str(date_contribution) + "," + str(date_sejour_formatted) + "," + repr(text_clean) + "," + str(reponse_proprio_clean))
 			i = i + 1
 
 		return 1
@@ -137,7 +139,7 @@ def retrievelocations():
 				print("Pagination: " + str(pagination) + "step: " + str(step))
 				if pagination == step:
 					print("Hotel scrappé en : %s secondes ---" % (time.time() - start_time))
-					print(bcolors.OKGREEN+ "Hotel scrappé ;)")
+					print(bcolors.OKGREEN+ "Hotel scrappé ;)"  + bcolors.ENDC)
 					break
 
 				parseHtml(url_page, hotel_en_cour)
