@@ -59,8 +59,7 @@ def parseHtml(url, hotel_en_cour):
 				text = review.find_by_css('q.hotels-review-list-parts-ExpandableReview__reviewText--3oMkH').text
 				vote_utile = review.find_by_css('.social-member-MemberHeaderStats__bold--3z3qh')[1].text
 
-			if len(date_sejour) > 0:
-				date_sejour = date_sejour.text
+
 
 			if len(review.find_by_css('q.hotels-review-list-parts-ExpandableReview__reviewText--3oMkH')) > 0:
 				text = review.find_by_css('q.hotels-review-list-parts-ExpandableReview__reviewText--3oMkH').text
