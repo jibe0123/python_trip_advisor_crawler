@@ -10,43 +10,44 @@ from splinter import Browser
 
 
 class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+	HEADER = '\033[95m'
+	OKBLUE = '\033[94m'
+	OKGREEN = '\033[92m'
+	WARNING = '\033[93m'
+	FAIL = '\033[91m'
+	ENDC = '\033[0m'
+	BOLD = '\033[1m'
+	UNDERLINE = '\033[4m'
+
 
 def parseHtml(url, hotel_en_cour):
 	executable_path = {'executable_path': './chromedriver'}
 
-	browser = Browser('chrome', **executable_path, headless = True)
-
+	browser = Browser('chrome', **executable_path, headless=True)
 
 	print(url)
 	with browser:
 		browser.visit(url)
 
-
 		reviews = browser.find_by_css('.hotels-review-list-parts-SingleReview__reviewContainer--d54T4')
 		i = 0
 		for review in reviews:
 
-			if	i == len(reviews):
+			if i == len(reviews):
 				break
 
 			user = review.find_by_css('.social-member-event-MemberEventOnObjectBlock__member--35-jC').text
 			user_contribution = review.find_by_css('.social-member-MemberHeaderStats__bold--3z3qh')[0].text
 			vote_utile = 0
 
-			date_contribution_raw = str(review.find_by_css('.social-member-event-MemberEventOnObjectBlock__event_type--3njyv span').text)
+			date_contribution_raw = str(
+				review.find_by_css('.social-member-event-MemberEventOnObjectBlock__event_type--3njyv span').text)
 
-			date_sejour = review.find_by_css('.hotels-review-list-parts-EventDate__event_date--CRXs4')
+			date_sejour_formatted = ""
 
-
-			date_sejour_formatted = date_sejour.text[16:len(date_sejour.text)]
+			if len(review.find_by_css('.hotels-review-list-parts-EventDate__event_date--CRXs4')) > 0:
+				date_sejour = review.find_by_css('.hotels-review-list-parts-EventDate__event_date--CRXs4')
+				date_sejour_formatted = date_sejour.text[16:len(date_sejour.text)]
 
 			date_contribution = ""
 
@@ -61,7 +62,6 @@ def parseHtml(url, hotel_en_cour):
 			if len(date_sejour) > 0:
 				date_sejour = date_sejour.text
 
-
 			if len(review.find_by_css('q.hotels-review-list-parts-ExpandableReview__reviewText--3oMkH')) > 0:
 				text = review.find_by_css('q.hotels-review-list-parts-ExpandableReview__reviewText--3oMkH').text
 
@@ -74,13 +74,13 @@ def parseHtml(url, hotel_en_cour):
 				reponse_proprio_clean = reponse_proprio_clean.replace('\n', " ")
 
 			text_clean = text.replace(',', '/')
-			text_clean = text_clean.replace('\n' , " ")
-
-
+			text_clean = text_clean.replace('\n', " ")
 
 			try:
 				with open("./resultat.csv", 'a', newline='', encoding='utf-8') as out:
-					out.write(hotel_en_cour + "," + str(user) + "," + str(user_contribution) + "," + str(vote_utile) + "," + str(date_contribution) + "," + str(date_sejour_formatted) + "," + repr(text_clean) + "," + str(reponse_proprio_clean))
+					out.write(hotel_en_cour + "," + str(user) + "," + str(user_contribution) + "," + str(
+						vote_utile) + "," + str(date_contribution) + "," + str(date_sejour_formatted) + "," + repr(
+						text_clean) + "," + str(reponse_proprio_clean))
 					out.write("\n")
 			except IOError:
 				print(IOError)
@@ -90,10 +90,11 @@ def parseHtml(url, hotel_en_cour):
 
 		return 1
 
+
 def getPageNumber(url):
 	executable_path = {'executable_path': './chromedriver'}
 
-	browser = Browser('chrome', **executable_path, headless = True)
+	browser = Browser('chrome', **executable_path, headless=True)
 	with browser:
 		browser.visit(url)
 		page_number = browser.find_by_css('.pageNumbers a.pageNum')
@@ -103,15 +104,11 @@ def getPageNumber(url):
 		return step
 
 
-
-
-
-
 def retrievelocations():
 	with open("./resultat.csv", 'a', newline='') as out:
-		out.write("Nom de l'hotel" + "," + "Contributeur" + "," + "Nombre_de_contributions" + "," + "Vote_utile" + "," + "date_contribution" + "," + "date_sejour" + "," + "review" + "," + "reponse_proprietaire")
+		out.write(
+			"Nom de l'hotel" + "," + "Contributeur" + "," + "Nombre_de_contributions" + "," + "Vote_utile" + "," + "date_contribution" + "," + "date_sejour" + "," + "review" + "," + "reponse_proprietaire")
 		out.write("\n")
-
 
 	with open('./csv/input.csv', newline='') as csvfile:
 		content = csv.reader(csvfile, delimiter=',', quotechar='|')
@@ -139,13 +136,11 @@ def retrievelocations():
 				print("Pagination: " + str(pagination) + "step: " + str(step))
 				if pagination == step:
 					print("Hotel scrappé en : %s secondes ---" % (time.time() - start_time))
-					print(bcolors.OKGREEN+ "Hotel scrappé ;)"  + bcolors.ENDC)
+					print(bcolors.OKGREEN + "Hotel scrappé ;)" + bcolors.ENDC)
 					break
 
 				parseHtml(url_page, hotel_en_cour)
 				pagination = pagination + 5
-
-
 
 
 def create_directory(path):
