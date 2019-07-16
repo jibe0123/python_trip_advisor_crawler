@@ -113,6 +113,9 @@ def retrievelocations():
 		content = csv.reader(csvfile, delimiter=',', quotechar='|')
 		for row in content:
 			start_time = time.time()
+			if len(row) < 1:
+				continue
+
 			url_origin = row[1]
 			hotel_en_cour = row[0].replace(' ', '')
 
